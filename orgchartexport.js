@@ -9,13 +9,22 @@
     let currentProfileId = null;
     let isPageReadyForButton = false; // This state variable acts as the "gate" for injection.
 
-    /**
-     * Finds the anchor element ("Org Chart" header) on the page.
-     * @returns {HTMLElement|null} The h3 element for the Org Chart section or null if not found.
-     */
-    function findAnchor() {
-        return Array.from(document.querySelectorAll('h3')).find(h3 => h3.textContent.trim() === ANCHOR_TEXT) || null;
-    }
+/**
+     * Finds the anchor element ("Org Chart" header) on the page.
+     * @returns {HTMLElement|null} The heading element for the Org Chart section or null if not found.
+     */
+    function findAnchor() {
+        // First, find the main profile widget to scope our search
+        const profileWidget = document.querySelector('user-profile-widget');
+        if (!profileWidget) {
+            return null; // We're not on a profile page
+        }
+
+        // Now, search for any heading element (h1-h6) *within the widget*
+        // This is resilient to the site changing from h3 to h2, etc.
+        return Array.from(profileWidget.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+            .find(h => h.textContent.trim() === ANCHOR_TEXT) || null;
+    }
 
     /**
      * Fetches the current profile's data. This serves as a timing gate to ensure the
