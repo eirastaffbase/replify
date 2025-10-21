@@ -26,7 +26,20 @@
      * Attempts to inject the image if the data is ready and the anchor point exists.
      */
     function tryInjectImage() {
-        const orgChartHeader = Array.from(document.querySelectorAll('h3')).find(h3 => h3.textContent.trim() === ORG_CHART_TEXT);
+        // --- MODIFIED SECTION ---
+        // First, find the user profile widget to scope our search
+        const profileWidget = document.querySelector('user-profile-widget');
+        if (!profileWidget) {
+            return; // Profile widget not ready
+        }
+
+        // Now, search for *any* element inside the widget that matches the text.
+        // This is more robust than looking for just 'h2' or 'h3'.
+        const orgChartHeader = Array.from(profileWidget.querySelectorAll('*')).find(el =>
+            el.textContent.trim() === ORG_CHART_TEXT
+        );
+        // --- END OF MODIFIED SECTION ---
+
         if (!orgChartHeader || !orgChartHeader.parentElement) {
             return; // Anchor not ready yet.
         }
@@ -37,11 +50,13 @@
 
         if (injectionData && injectionData.imageUrl) {
             console.log(`✨ Staffbase Injector: Anchor found. Injecting image for ${currentProfileId}.`);
+
+            // Find the parent "card" element that contains the header
             const orgChartContainer = orgChartHeader.parentElement;
 
             const newImageContainer = document.createElement('div');
             newImageContainer.id = INJECTED_CONTAINER_ID;
-            // Using the same styling as the original script's widget container for consistency.
+            // Using the same styling as the org chart's container for consistency.
             newImageContainer.className = 'tablet:!border border-neutral-weak tablet:z-[60] tablet:px-40 tablet:py-32 tablet:rounded-6 overflow-hidden border-0 bg-neutral-surface p-[24px]';
 
             const imageElement = document.createElement('img');
@@ -54,6 +69,8 @@
             imageElement.style.borderRadius = '4px'; // A slight rounding of corners
 
             newImageContainer.appendChild(imageElement);
+
+            // Inject the new image container *before* the org chart's container
             orgChartContainer.insertAdjacentElement('beforebegin', newImageContainer);
             console.log(`✅ Staffbase Injector: Image injected successfully.`);
         }
@@ -96,6 +113,7 @@
 
                 if (!imageUrl) {
                     console.log(`🟡 Staffbase Injector: No '${IMAGE_FIELD_NAME}' field found or it is empty for ${profileId}. No action needed.`);
+                    injectionData = { imageUrl: null }; // Set to null to prevent re-checking
                     isFetching = false;
                     return; // Success, nothing to inject
                 }
@@ -127,6 +145,7 @@
      */
     function handleNavigation() {
         if (!window.location.pathname.includes('/profile/')) {
+            currentProfileId = null; // Reset profile ID when navigating away
             return;
         }
 
@@ -153,7 +172,8 @@
     // --- MAIN EXECUTION LOGIC ---
 
     const domObserver = new MutationObserver(() => {
-        if (injectionData) {
+        // Only try to inject if data is ready AND an image hasn't been injected yet.
+        if (injectionData && !document.getElementById(INJECTED_CONTAINER_ID)) {
             tryInjectImage();
         }
     });
