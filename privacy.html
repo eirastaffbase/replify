@@ -3,59 +3,88 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Privacy Policy for Replify Chrome Extension</title>
+    <title>Privacy Notice – Replify for Staffbase</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 2rem;
-            max-width: 800px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 2.5rem 2rem;
+            max-width: 680px;
+            color: #1a1a1a;
         }
-        h1, h2, h3 {
-            color: #333;
+        h1 { font-size: 1.5rem; color: #1a56db; margin-bottom: 0.2rem; }
+        h2 { font-size: 1rem; font-weight: 600; margin-top: 1.8rem; margin-bottom: 0.4rem; }
+        p, li { font-size: 0.93rem; margin-bottom: 0.6em; }
+        ul { padding-left: 1.3rem; }
+        .meta { color: #6b7280; font-size: 0.82rem; margin-bottom: 2rem; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 0.88rem;
+            margin: 0.8rem 0 1.5rem;
         }
-        p {
-            margin-bottom: 1em;
-        }
-        ul {
-            margin-bottom: 1em;
-        }
+        th, td { border: 1px solid #e5e7eb; padding: 0.45rem 0.75rem; text-align: left; vertical-align: top; }
+        th { background: #f9fafb; font-weight: 600; }
+        a { color: #1a56db; }
     </style>
 </head>
 <body>
-    <h1>Privacy Policy for Replify Chrome Extension</h1>
-    <p><strong>Last updated:</strong> April 23, 2025</p>
 
-    <p>This privacy policy applies to the <strong>Replify Chrome Extension</strong>.</p>
+    <h1>Privacy Notice – Replify for Staffbase</h1>
+    <p class="meta">
+        Last updated: April 8, 2026 &nbsp;·&nbsp;
+        Contact: <a href="mailto:eira.tope@staffbase.com">eira.tope@staffbase.com</a>
+    </p>
 
-    <h2>Data Collection and Storage</h2>
-    <p>The Replify Chrome Extension itself does <strong>not</strong> directly collect or store any personal data from users on external servers. Any API keys or settings you enter within the extension are stored <strong>locally</strong> in your browser's local storage. This data is not transmitted to us or any third-party servers for persistent storage by the extension itself.</p>
+    <p>Replify is an internal Staffbase tool. This notice explains what data is collected, how it is stored, and how long it is kept. Processing is based on <strong>legitimate interest</strong> (support and security monitoring).</p>
 
-    <h2>Interaction with External Services</h2>
-    <p>The Replify Chrome Extension interacts with the following external services to provide its functionalities:</p>
+    <h2>What is stored and for how long</h2>
+    <table>
+        <thead>
+            <tr><th>Data</th><th>How stored</th><th>Kept for</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Work email</td>
+                <td>One-way hash only — raw email is never written to the database</td>
+                <td>365 days from last activity</td>
+            </tr>
+            <tr>
+                <td>Role &amp; region</td>
+                <td>Plain text</td>
+                <td>365 days from last activity</td>
+            </tr>
+            <tr>
+                <td>Device ID</td>
+                <td>Random anonymous ID generated on install, stored locally in your browser</td>
+                <td>90 days per activity log entry</td>
+            </tr>
+            <tr>
+                <td>Usage events (which environment, which action)</td>
+                <td>Action type + environment slug + device ID + email hash</td>
+                <td>90 days, then automatically deleted</td>
+            </tr>
+            <tr>
+                <td>Staffbase API key</td>
+                <td>Stored locally in your browser. Temporarily held server-side only during multi-step background jobs (e.g. LinkedIn article scraping) and deleted immediately after the job completes.</td>
+                <td>Duration of the background job only.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>What is not stored</h2>
     <ul>
-        <li><strong>Staffbase APIs:</strong> The extension uses Staffbase APIs for authentication and to apply branding changes to Staffbase environments. When you use these features, your API key is transmitted directly to Staffbase for authentication. We do not store this API key beyond its use within your current browser session, or beyond the local storage of your browser.</li>
-        <li><strong>Third-party Environment Setup Service:</strong> When you use the environment setup features, data such as your API token and configuration choices (e.g., enabled features, quick links) are transmitted to a third-party service hosted on Google Cloud (sb-news-generator.uc.r.appspot.com) to facilitate the creation of new Staffbase environments. Please review the privacy policy of this service for details on their data handling practices.</li>
+        <li>Raw email addresses</li>
+        <li>Staffbase customer or employee data from the environments you work in</li>
+        <li>Anything outside of Staffbase domains</li>
     </ul>
-    <p>We encourage you to review the privacy policies of these external services to understand how your data is collected, used, and protected by them.</p>
 
-    <h2>Usage Analytics</h2>
-    <p>The Replify Chrome Extension does <strong>not</strong> collect any usage data or analytics about how you use the extension itself. We do not employ any tracking mechanisms within the extension.</p>
+    <h2>Who can access the data</h2>
+    <p>Only the tool owner (Eira Tope) via direct database access. The extension client cannot read stored data — all writes go through server-side functions. Data is stored on Supabase (EU region) under a signed Data Processing Agreement.</p>
 
-    <h2>Data Retention</h2>
-    <p>API keys and settings you choose to save are stored locally in your browser's storage. You can clear this data at any time by managing your browser's local storage or by removing/resetting the extension.</p>
-    <p>Data transmitted to external services is subject to their respective data retention policies.</p>
+    <h2>Your rights</h2>
+    <p>You can request access to or deletion of your data at any time by emailing <a href="mailto:eira.tope@staffbase.com">eira.tope@staffbase.com</a>. Deletion will be completed within 30 days..</p>
 
-    <h2>Children's Privacy</h2>
-    <p>The Replify Chrome Extension is not intended for use by children under the age of 13, and we do not knowingly collect any personal data from children. Our interactions with external services are also not directed towards children.</p>
-
-    <h2>Changes to This Policy</h2>
-    <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with a revised "Last updated" date.</p>
-
-    <h2>Contact</h2>
-    <p>If you have any questions or concerns about this privacy policy, please feel free to reach out:</p>
-    <ul>
-        <li>Email: <a href="mailto:eira.tope@staffbase.com">eira.tope@staffbase.com</a></li>
-    </ul>
 </body>
 </html>
