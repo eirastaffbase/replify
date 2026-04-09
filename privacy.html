@@ -47,7 +47,7 @@
         <tbody>
             <tr>
                 <td>Work email</td>
-                <td>One-way hash only — raw email is never written to the database</td>
+                <td>Plain text — accessible only to the tool owner via direct database access</td>
                 <td>365 days from last activity</td>
             </tr>
             <tr>
@@ -62,7 +62,7 @@
             </tr>
             <tr>
                 <td>Usage events (which environment, which action)</td>
-                <td>Action type + environment slug + device ID + email hash</td>
+                <td>Action type + environment slug + device ID + email (if registered)</td>
                 <td>90 days, then automatically deleted</td>
             </tr>
             <tr>
@@ -75,16 +75,16 @@
 
     <h2>What is not stored</h2>
     <ul>
-        <li>Raw email addresses</li>
+        <li>Staffbase passwords or API keys (beyond temporary job use described above)</li>
         <li>Staffbase customer or employee data from the environments you work in</li>
         <li>Anything outside of Staffbase domains</li>
     </ul>
 
     <h2>Who can access the data</h2>
-    <p>Only the tool owner (Eira Tope) via direct database access. The extension client cannot read stored data — all writes go through server-side functions. Data is stored on Supabase (EU region) under a signed Data Processing Agreement.</p>
+    <p>Only the tool owner (Eira Tope). The extension client cannot read stored data — all writes go through server-side functions. Data is stored on Supabase under a signed Data Processing Agreement.</p>
 
     <h2>Your rights</h2>
-    <p>You can request access to or deletion of your data at any time by emailing <a href="mailto:eira.tope@staffbase.com">eira.tope@staffbase.com</a>. Deletion will be completed within 30 days..</p>
+    <p>You can request access to or deletion of your data at any time by emailing <a href="mailto:eira.tope@staffbase.com">eira.tope@staffbase.com</a>. Deletion will be completed within 30 days.</p>
 
 </body>
 </html>
