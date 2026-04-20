@@ -1,10 +1,11 @@
-
-
 (function() {
-    alert('hi');
     'use strict';
 
-    GM_addStyle(`
+    // 1. Create a new style element
+    const style = document.createElement('style');
+    
+    // 2. Add your CSS rules into the style element
+    style.textContent = `
         /* =========================================
            1. CORE HEADER SHAPE & GLASSMORPHISM
            ========================================= */
@@ -49,9 +50,8 @@
         #root header .group:hover {
             background: transparent !important;
             background-color: transparent !important;
-                        box-shadow: none !important;
+            box-shadow: none !important;
             outline: none !important;
-
         }
 
         /* Strip background/borders off nested elements to prevent double-layering */
@@ -67,9 +67,6 @@
             outline: none !important;
             box-shadow: none !important;
         }
-
-
-
 
         /* =========================================
            3. NEW SCI-FI INTERACTIVE EFFECTS
@@ -105,5 +102,8 @@
             transform: translateY(-2px) !important;
             border-radius: 9999px !important;
         }
-    `);
+    `;
+
+    // 3. Append the style element to the document head
+    document.head.appendChild(style);
 })();
