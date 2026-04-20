@@ -1,6 +1,7 @@
 
 
 (function() {
+    alert('hi');
     'use strict';
 
     GM_addStyle(`
