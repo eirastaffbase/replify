@@ -1,16 +1,22 @@
 (function() {
     'use strict';
     
+    // Alert to confirm the script is firing
+    alert('hello');
+
     // Create the style element
     const style = document.createElement('style');
     style.type = 'text/css';
 
-    // The CSS string (using the exact rules you provided)
+    // The CSS string
     const css = `
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
         /* =========================================
            1. CORE HEADER SHAPE & GLASSMORPHISM
            ========================================= */
         #root header {
+            font-family: 'Source Sans 3', sans-serif !important;
             background: rgba(5, 10, 10, 0.65) !important;
             backdrop-filter: blur(16px) saturate(120%) !important;
             -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
@@ -32,6 +38,7 @@
 
         #root header a span,
         #root header svg {
+            font-family: 'Source Sans 3', sans-serif !important;
             color: #ffffff !important;
             transition: all 0.3s ease-out !important;
         }
