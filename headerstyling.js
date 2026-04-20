@@ -1,8 +1,6 @@
 (function() {
     'use strict';
     
-    // Alert to confirm the script is firing
-    alert('hello');
 
     // Create the style element
     const style = document.createElement('style');
