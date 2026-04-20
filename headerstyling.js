@@ -1,11 +1,15 @@
 (function() {
     'use strict';
-
-    // 1. Create a new style element
-    const style = document.createElement('style');
     
-    // 2. Add your CSS rules into the style element
-    style.textContent = `
+    // Alert to confirm the script is firing
+    alert('hello');
+
+    // Create the style element
+    const style = document.createElement('style');
+    style.type = 'text/css';
+
+    // The CSS string (using the exact rules you provided)
+    const css = `
         /* =========================================
            1. CORE HEADER SHAPE & GLASSMORPHISM
            ========================================= */
@@ -104,6 +108,9 @@
         }
     `;
 
-    // 3. Append the style element to the document head
+    // Inject the CSS into the style tag
+    style.appendChild(document.createTextNode(css));
+
+    // Append the style tag to the document head
     document.head.appendChild(style);
 })();
