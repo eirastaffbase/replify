@@ -1,3 +1,4 @@
+alert('hi');
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', () => {
     
