@@ -115,4 +115,40 @@
     // Append the style tag to the document head
     document.head.appendChild(style);
 
+    /* =========================================
+       4. WEATHER IMAGE REPLACEMENT LOGIC
+       ========================================= */
+    function swapWeatherIcons() {
+        // Find all images that match the old eirastaffbase weather path
+        const weatherImages = document.querySelectorAll('img[src*="eirastaffbase.github.io/weather-time/resources/img/"]');
+        
+        weatherImages.forEach(img => {
+            const oldSrc = img.getAttribute('src');
+            
+            // Replace the directory path and swap .svg for .png
+            const newSrc = oldSrc
+                .replace('/weather-time/resources/img/', '/widget-images/')
+                .replace('.svg', '.png');
+                
+            if (oldSrc !== newSrc) {
+                img.setAttribute('src', newSrc);
+            }
+        });
+    }
+
+    // Run once immediately in case the widget is already in the DOM
+    swapWeatherIcons();
+
+    // Set up a MutationObserver to watch for dynamically loaded widgets
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.addedNodes.length > 0) {
+                swapWeatherIcons();
+            }
+        }
+    });
+
+    // Start observing the body for injected elements
+    observer.observe(document.body, { childList: true, subtree: true });
+
 })();
