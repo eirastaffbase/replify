@@ -1,0 +1,26 @@
+// Wait for the DOM to load
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Find all the headline spans
+    const headlines = document.querySelectorAll('.news-slider-header-wrapper h2.news-feed-post-headline a.news-feed-post-link span');
+
+    headlines.forEach(span => {
+        // Grab the text
+        const text = span.textContent;
+        
+        // Clear out the original text
+        span.innerHTML = ''; 
+        
+        // Loop through each character
+        for (let char of text) {
+            const charSpan = document.createElement('span');
+            charSpan.className = 'hover-letter';
+            
+            // If the character is a space, use a non-breaking space so it doesn't collapse
+            charSpan.innerHTML = char === ' ' ? '&nbsp;' : char;
+            
+            // Put the wrapped letter back into the headline
+            span.appendChild(charSpan);
+        }
+    });
+});
