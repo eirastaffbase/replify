@@ -59,11 +59,13 @@
             outline: none !important;
         }
 
+        /* Strip background/borders off nested elements to prevent double-layering */
         #root header li > div[role="button"] > a {
             background: transparent !important;
             border: none !important;
         }
 
+        /* Kill all focus rings, hidden shadows, and weird text highlights */
         #root header *:focus,
         #root header *:focus-visible,
         #root header *:active {
@@ -74,6 +76,7 @@
         /* =========================================
            3. NEW SCI-FI INTERACTIVE EFFECTS
            ========================================= */
+        /* Apply base transitions ONLY to the top-level wrappers */
         #root header li > a,
         #root header li > div[role="button"],
         #root header li > button {
@@ -81,6 +84,7 @@
             border: 1px solid transparent !important;
         }
 
+        /* ACTIVE STATE */
         #root header a[data-status="active"] {
             background: rgba(0, 27, 24, 0.6) !important;
             border: 1px solid rgba(30, 252, 230, 0.5) !important;
@@ -91,6 +95,7 @@
             color: #1efce6 !important;
         }
 
+        /* HOVER EFFECTS - STRICTLY limited to the outer container */
         #root header li > a:hover,
         #root header li > div[role="button"]:hover,
         #root header li > button:hover {
@@ -102,115 +107,44 @@
             transform: translateY(-2px) !important;
             border-radius: 9999px !important;
         }
-
-        /* =========================================
-           4. NEWS SLIDER HEADLINE: SHIMMER & LETTER EXPAND
-           ========================================= */
-        /* Completely hide the underline */
-        .news-slider-header-wrapper h2.news-feed-post-headline a.news-feed-post-link,
-        .news-slider-header-wrapper h2.news-feed-post-headline a.news-feed-post-link:hover,
-        .news-slider-header-wrapper h2.news-feed-post-headline a.news-feed-post-link:focus {
-            text-decoration: none !important;
-        }
-
-        /* Parent Span: Gradient, Shimmer, and Shadow */
-        .news-slider-header-wrapper h2.news-feed-post-headline a.news-feed-post-link > span {
-            font-family: 'Lexend Deca', sans-serif !important;
-            font-weight: 500 !important;
-            background-image: linear-gradient(to right, #ffffff, #c2efeb, #ffffff) !important; /* 3 colors for looping shimmer */
-            background-size: 200% auto !important;
-            -webkit-background-clip: text !important;
-            background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            color: transparent !important;
-            text-shadow: 0px 1px 2px rgba(215, 226, 217, 0.55) !important;
-            transition: background-position 0.4s ease-out !important;
-            display: inline-block !important; /* Helps with transformations */
-        }
-
-        /* Trigger Shimmer when hovering the link */
-        .news-slider-header-wrapper h2.news-feed-post-headline a.news-feed-post-link:hover > span {
-            background-position: right center !important;
-        }
-
-        /* Individual Letter Base Styles (added via JS) */
-        .hover-letter {
-            display: inline-block !important; /* Required for scaling */
-            transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1) !important; /* Snappy, smooth scale */
-        }
-
-        /* Expand just the specific letter you are hovering over */
-        .hover-letter:hover {
-            transform: scale(1.15) translateY(-1px) !important;
-        }
     `;
 
     // Inject the CSS into the style tag
     style.appendChild(document.createTextNode(css));
+
+    // Append the style tag to the document head
     document.head.appendChild(style);
 
     /* =========================================
-       JS LOGIC 1: WEATHER IMAGE REPLACEMENT
+       4. WEATHER IMAGE REPLACEMENT LOGIC
        ========================================= */
     function swapWeatherIcons() {
+        // Find all images that match the old eirastaffbase weather path
         const weatherImages = document.querySelectorAll('img[src*="eirastaffbase.github.io/weather-time/resources/img/"]');
+        
         weatherImages.forEach(img => {
             const oldSrc = img.getAttribute('src');
+            
+            // Replace the directory path and swap .svg for .png
             const newSrc = oldSrc
                 .replace('/weather-time/resources/img/', '/widget-images/')
                 .replace('.svg', '.png');
+                
             if (oldSrc !== newSrc) {
                 img.setAttribute('src', newSrc);
             }
         });
     }
 
-    /* =========================================
-       JS LOGIC 2: SPLIT HEADLINE TEXT FOR ANIMATION
-       ========================================= */
-    function splitHeadlineText() {
-        // Find all news slider headline spans that haven't been split yet
-        const headlines = document.querySelectorAll('.news-slider-header-wrapper h2.news-feed-post-headline a.news-feed-post-link span:not(.split-done)');
-        
-        headlines.forEach(headline => {
-            const text = headline.textContent;
-            headline.textContent = ''; // Clear the original text
-            
-            // Loop through each character and wrap it in a span
-            for (let char of text) {
-                const charSpan = document.createElement('span');
-                charSpan.className = 'hover-letter';
-                
-                // Preserve spaces properly
-                if (char === ' ') {
-                    charSpan.innerHTML = '&nbsp;';
-                } else {
-                    charSpan.textContent = char;
-                }
-                
-                headline.appendChild(charSpan);
-            }
-            // Mark as done so we don't accidentally split it twice
-            headline.classList.add('split-done');
-        });
-    }
-
-    // Run both functions immediately
+    // Run once immediately in case the widget is already in the DOM
     swapWeatherIcons();
-    splitHeadlineText();
 
-    // Set up a MutationObserver to watch for dynamically loaded widgets (like sliders changing slides)
+    // Set up a MutationObserver to watch for dynamically loaded widgets
     const observer = new MutationObserver((mutations) => {
-        let shouldRun = false;
         for (const mutation of mutations) {
             if (mutation.addedNodes.length > 0) {
-                shouldRun = true;
-                break;
+                swapWeatherIcons();
             }
-        }
-        if (shouldRun) {
-            swapWeatherIcons();
-            splitHeadlineText();
         }
     });
 
