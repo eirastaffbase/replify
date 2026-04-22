@@ -92,7 +92,7 @@
         }
 
         #root header a[data-status="active"] span {
-            color: #1efce6 !important;
+            color: #6cb4ad !important;
         }
 
         /* HOVER EFFECTS - STRICTLY limited to the outer container */
@@ -107,6 +107,33 @@
             transform: translateY(-2px) !important;
             border-radius: 9999px !important;
         }
+
+        /* =========================================
+           4. AI ASSISTANT BUTTON MODS
+           ========================================= */
+        /* Base state: Larger wrapper, pointer cursor, and a smooth, quick transition */
+        .ai-assistant-button > div {
+            height: 90px !important;
+            width: 90px !important;
+            cursor: pointer !important;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out !important;
+        }
+
+        /* Hover state: The circle gently scales up from the center, adding a soft glow */
+        .ai-assistant-button > div:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 8px 20px rgba(10, 130, 118, 0.4) !important;
+        }
+
+        /* Ensure the invisible button area inside also triggers the pointer cursor */
+        .ai-assistant-button button {
+            cursor: pointer !important;
+        }
+
+        /* Make the image icon inside proportionately larger, but keep it completely static */
+        .ai-assistant-button button img {
+            width: 65px !important;
+        }
     `;
 
     // Inject the CSS into the style tag
@@ -116,7 +143,7 @@
     document.head.appendChild(style);
 
     /* =========================================
-       4. WEATHER IMAGE REPLACEMENT LOGIC
+       5. WEATHER IMAGE REPLACEMENT LOGIC
        ========================================= */
     function swapWeatherIcons() {
         // Find all images that match the old eirastaffbase weather path
