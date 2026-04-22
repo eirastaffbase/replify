@@ -132,7 +132,7 @@
 
         /* Make the image icon inside proportionately larger, but keep it completely static */
         .ai-assistant-button button img {
-            width: 65px !important;
+            width: 55px !important;
         }
     `;
 
