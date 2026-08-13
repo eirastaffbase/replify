@@ -23,13 +23,13 @@
 (function () {
   "use strict";
 
-  var VERSION = "1.4";
+  var VERSION = "1.5";
 
   // ---- CONFIG --------------------------------------------------------------
   var GROUP_ID    = "6a7b368314c9f906920ccd7f"; // Hill's Pet Nutrition group
   var LOGO_URL    = "https://upload.wikimedia.org/wikipedia/en/5/54/HIll%27s_Pet_Nutrition_logo.png";
   var ACCENT      = "#313B86";  // active tab + notification badges
-  var BORDER      = "#D0012E";  // nav bar border
+  var BORDER      = "#0154A4";  // nav bar border (dark Hill's blue)
   var TEXT        = "#0154A4";  // nav labels (non-active)
   var RADIUS      = "8px";      // nav bar corners
   var FONT_FAMILY = '"Montserrat", "Helvetica Neue", Arial, sans-serif';
