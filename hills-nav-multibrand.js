@@ -23,7 +23,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "1.9";
+  var VERSION = "1.10";
 
   // ---- CONFIG --------------------------------------------------------------
   var GROUP_ID    = "6a7b368314c9f906920ccd7f"; // Hill's Pet Nutrition group
@@ -36,9 +36,9 @@
   var FONT_HREF   = "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap";
   // --------------------------------------------------------------------------
 
-  var STYLE_ID    = "replify-hills-nav";
-  var READY_CLASS = "replify-nav-ready";   /* Block B hides the nav until this is on <html> */
-  var FONT_ID     = "replify-hills-font";
+  var STYLE_ID   = "replify-hills-nav";
+  var REVEAL_ID  = "replify-nav-reveal";   /* Block B hides the nav; this rule reveals it */
+  var FONT_ID    = "replify-hills-font";
   var GROUP_RE = /group-[a-f0-9]{16,}/;
 
   var H = '[data-c13y-region="header"]';
@@ -55,9 +55,9 @@
     return s;
   }
 
-  // The nav is hidden by Block B CSS (html:not(.replify-nav-ready) …) until we
-  // add this class -> then the correctly-branded nav appears. No flash.
-  function reveal() { TOP.documentElement.classList.add(READY_CLASS); }
+  // The nav is hidden by Block B CSS ([data-c13y-region="header"]{display:none}).
+  // Inject a later same-selector rule to reveal it (wins by source order). No flash.
+  function reveal() { addStyle(REVEAL_ID, H + "{display:flex !important;}"); }
 
   // Read group classes from any same-origin document we can reach.
   function groupClasses() {
@@ -103,6 +103,7 @@
       H + ' [data-c13y-component="button"][data-search-active] [data-c13y-component="icon"],' +
       H + ' [data-c13y-component="button"][data-popup-open] [data-c13y-component="icon"],' +
       H + ' [data-c13y-component="button"][aria-expanded="true"] [data-c13y-component="icon"]{color:#fff !important;fill:#fff !important;}' +
+      H + ' [data-c13y-component="button"][data-variant="ghost"][data-color="primary"] [data-c13y-component="icon"]{color:#fff !important;fill:#fff !important;}' +
       H + ' [data-c13y-component="title"]{color:' + TEXT + " !important;}" +
       /* nudge the menu items left a touch (Hill's only) */
       '[data-c13y-region="header-menubar"] [data-c13y-component="collection"]{transform:translateX(-12px) !important;}';
