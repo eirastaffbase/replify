@@ -23,7 +23,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "1.8";
+  var VERSION = "1.9";
 
   // ---- CONFIG --------------------------------------------------------------
   var GROUP_ID    = "6a7b368314c9f906920ccd7f"; // Hill's Pet Nutrition group
@@ -99,7 +99,10 @@
       H + H + "{border-radius:" + RADIUS + " !important;}" +   /* radius MUST be its own rule */
       H + H + "{font-family:" + FONT_FAMILY + " !important;}" +
       H + H + H + "{" + border + "}" +
-      H + H + H + H + ' [class*="bg-nav-appintranet-accent"]{background-color:' + ACCENT + " !important;}" +
+      H + H + H + H + ' [class*="bg-nav-appintranet-accent"]{background-color:' + ACCENT + " !important;color:#fff !important;}" +
+      H + ' [data-c13y-component="button"][data-search-active] [data-c13y-component="icon"],' +
+      H + ' [data-c13y-component="button"][data-popup-open] [data-c13y-component="icon"],' +
+      H + ' [data-c13y-component="button"][aria-expanded="true"] [data-c13y-component="icon"]{color:#fff !important;fill:#fff !important;}' +
       H + ' [data-c13y-component="title"]{color:' + TEXT + " !important;}" +
       /* nudge the menu items left a touch (Hill's only) */
       '[data-c13y-region="header-menubar"] [data-c13y-component="collection"]{transform:translateX(-12px) !important;}';
