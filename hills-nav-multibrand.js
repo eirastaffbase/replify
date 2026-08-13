@@ -23,7 +23,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "1.7";
+  var VERSION = "1.8";
 
   // ---- CONFIG --------------------------------------------------------------
   var GROUP_ID    = "6a7b368314c9f906920ccd7f"; // Hill's Pet Nutrition group
@@ -36,9 +36,9 @@
   var FONT_HREF   = "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap";
   // --------------------------------------------------------------------------
 
-  var STYLE_ID = "replify-hills-nav";
-  var HIDE_ID  = "replify-hills-prehide";
-  var FONT_ID  = "replify-hills-font";
+  var STYLE_ID    = "replify-hills-nav";
+  var READY_CLASS = "replify-nav-ready";   /* Block B hides the nav until this is on <html> */
+  var FONT_ID     = "replify-hills-font";
   var GROUP_RE = /group-[a-f0-9]{16,}/;
 
   var H = '[data-c13y-region="header"]';
@@ -55,10 +55,9 @@
     return s;
   }
 
-  // Hide the WHOLE nav ASAP until we know the group (avoids any un-branded flash).
-  function prehide() { addStyle(HIDE_ID, H + "{visibility:hidden !important;}"); }
-  function reveal() { var h = TOP.getElementById(HIDE_ID); if (h) h.parentNode.removeChild(h); }
-  prehide();
+  // The nav is hidden by Block B CSS (html:not(.replify-nav-ready) …) until we
+  // add this class -> then the correctly-branded nav appears. No flash.
+  function reveal() { TOP.documentElement.classList.add(READY_CLASS); }
 
   // Read group classes from any same-origin document we can reach.
   function groupClasses() {
