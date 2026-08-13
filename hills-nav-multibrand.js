@@ -23,7 +23,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "1.5";
+  var VERSION = "1.7";
 
   // ---- CONFIG --------------------------------------------------------------
   var GROUP_ID    = "6a7b368314c9f906920ccd7f"; // Hill's Pet Nutrition group
@@ -55,8 +55,8 @@
     return s;
   }
 
-  // Hide the logo ASAP (keeps its box, so no layout shift).
-  function prehide() { addStyle(HIDE_ID, LOGO_SEL + "{visibility:hidden !important;}"); }
+  // Hide the WHOLE nav ASAP until we know the group (avoids any un-branded flash).
+  function prehide() { addStyle(HIDE_ID, H + "{visibility:hidden !important;}"); }
   function reveal() { var h = TOP.getElementById(HIDE_ID); if (h) h.parentNode.removeChild(h); }
   prehide();
 
@@ -101,7 +101,9 @@
       H + H + "{font-family:" + FONT_FAMILY + " !important;}" +
       H + H + H + "{" + border + "}" +
       H + H + H + H + ' [class*="bg-nav-appintranet-accent"]{background-color:' + ACCENT + " !important;}" +
-      H + ' [data-c13y-component="title"]{color:' + TEXT + " !important;}";
+      H + ' [data-c13y-component="title"]{color:' + TEXT + " !important;}" +
+      /* nudge the menu items left a touch (Hill's only) */
+      '[data-c13y-region="header-menubar"] [data-c13y-component="collection"]{transform:translateX(-12px) !important;}';
     addStyle(STYLE_ID, css);
     console.log("[replify hills-nav v" + VERSION + "] Hill's branding applied.");
   }
