@@ -11,20 +11,20 @@
     };
 
     fixWrapper();
-    const observer = new MutationObserver((mutations) => {
+    const wrapperObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          observer.disconnect();
+          wrapperObserver.disconnect();
           fixWrapper();
-          observer.observe(wrapper, { attributes: true });
+          wrapperObserver.observe(wrapper, { attributes: true });
         }
       });
     });
-    observer.observe(wrapper, { attributes: true });
+    wrapperObserver.observe(wrapper, { attributes: true });
   }
 
-  // --- 2. Move the login hint (No styles added) ---
-  setInterval(() => {
+  // --- 2. Move the login hint with a MutationObserver ---
+  const moveLoginHint = () => {
     // Find the login hint ONLY if it is still inside the sidebar
     const loginHint = document.querySelector('#sidebar .public-login-hint');
     if (!loginHint) return;
@@ -39,9 +39,20 @@
     }
 
     // Move the element
-    if (targetRow) {
+    if (targetRow && targetRow.nextSibling !== loginHint) {
       targetRow.parentNode.insertBefore(loginHint, targetRow.nextSibling);
     }
-  }, 500);
+  };
+
+  // Run once on load
+  moveLoginHint();
+
+  // Set up a global observer to catch SPA navigation and Shadow DOM injections
+  const domObserver = new MutationObserver(() => {
+    moveLoginHint();
+  });
+
+  // Observe the body for added/removed nodes so it instantly catches when React redraws the page
+  domObserver.observe(document.body, { childList: true, subtree: true });
 
 })();
