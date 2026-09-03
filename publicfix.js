@@ -1,43 +1,32 @@
 (function runSiteFixes() {
-  const HOMEPAGE_INSTALLATION_ID = "6a90476cb2342f25022c5592";
+  const HOMEPAGE_ID = '6a90476cb2342f25022c5592';
 
-  // --- 1. Fix the wrapper layout bug ---
-  const wrapper = document.getElementById('wrapper');
-  if (wrapper) {
-    const fixWrapper = () => {
-      if (wrapper.classList.contains('on-main-page') && !wrapper.classList.contains('is-content-document-page')) {
+  // 1. Fix wrapper layout bug when navigating back
+  const fixWrapper = () => {
+    const wrapper = document.getElementById('wrapper');
+    if (wrapper && wrapper.classList.contains('on-main-page')) {
+      if (!wrapper.classList.contains('is-content-document-page')) {
         wrapper.classList.add('is-content-document-page');
       }
       const selectedSidebarItem = document.querySelector('#sidebar .item.selected');
-      if (selectedSidebarItem) selectedSidebarItem.classList.remove('selected');
-    };
+      if (selectedSidebarItem) {
+        selectedSidebarItem.classList.remove('selected');
+      }
+    }
+  };
 
-    fixWrapper();
-    const wrapperObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          wrapperObserver.disconnect();
-          fixWrapper();
-          wrapperObserver.observe(wrapper, { attributes: true });
-        }
-      });
-    });
-    wrapperObserver.observe(wrapper, { attributes: true });
-  }
-
-  // --- 2. Move the login hint only on the homepage ---
-  const handleLoginHint = () => {
+  // 2. Control login hint placement based on homepage ID
+  const manageLoginHint = () => {
     const loginHint = document.querySelector('.public-login-hint');
-    const sidebarPluginList = document.querySelector('#sidebar .plugin-list');
-    const currentPage = document.querySelector('.page[data-installation-id]');
-    
-    if (!loginHint || !sidebarPluginList || !currentPage) return;
+    const sidebarList = document.querySelector('#sidebar .plugin-list');
+    const activePage = document.querySelector('.page[data-installation-id]');
 
-    const currentInstallId = currentPage.getAttribute('data-installation-id');
-    const isHomepage = currentInstallId === HOMEPAGE_INSTALLATION_ID;
+    if (!loginHint || !sidebarList) return;
+
+    const isHomepage = activePage && activePage.getAttribute('data-installation-id') === HOMEPAGE_ID;
 
     if (isHomepage) {
-      // Find the quicklinks row (checking Shadow DOM if needed)
+      // Find quicklinks row in light DOM or Shadow DOM
       let targetRow = document.getElementById('d45e5e96-e719-4e84-b40d-aeac2eac2c4c');
       if (!targetRow) {
         const shadowHost = document.querySelector('[data-testid="modern-page-shadow-host"]');
@@ -46,24 +35,34 @@
         }
       }
 
-      // Move it below quicklinks on the homepage
+      // Move below quicklinks if found
       if (targetRow && targetRow.nextSibling !== loginHint) {
         targetRow.parentNode.insertBefore(loginHint, targetRow.nextSibling);
       }
     } else {
-      // Return it to the sidebar on any other page so CSS handles it
-      if (loginHint.parentNode !== sidebarPluginList) {
-        sidebarPluginList.prepend(loginHint);
+      // Return node to sidebar on non-homepage views
+      if (loginHint.parentNode !== sidebarList) {
+        sidebarList.prepend(loginHint);
       }
     }
   };
 
-  handleLoginHint();
+  const runAllFixes = () => {
+    fixWrapper();
+    manageLoginHint();
+  };
 
-  // Observer to catch SPA page switches instantly
-  const pageObserver = new MutationObserver(() => {
-    handleLoginHint();
+  runAllFixes();
+
+  // Watch for SPA state changes and DOM updates
+  const observer = new MutationObserver(() => {
+    runAllFixes();
   });
 
-  pageObserver.observe(document.body, { childList: true, subtree: true });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class', 'data-installation-id']
+  });
 })();
