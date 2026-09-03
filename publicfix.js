@@ -1,58 +1,69 @@
 (function runSiteFixes() {
-  // --- 1. Fix the wrapper layout bug ---
   const wrapper = document.getElementById('wrapper');
-  if (wrapper) {
-    const fixWrapper = () => {
-      if (wrapper.classList.contains('on-main-page') && !wrapper.classList.contains('is-content-document-page')) {
-        wrapper.classList.add('is-content-document-page');
-      }
-      const selectedSidebarItem = document.querySelector('#sidebar .item.selected');
-      if (selectedSidebarItem) selectedSidebarItem.classList.remove('selected');
-    };
+  if (!wrapper) return;
 
-    fixWrapper();
-    const wrapperObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          wrapperObserver.disconnect();
-          fixWrapper();
-          wrapperObserver.observe(wrapper, { attributes: true });
-        }
-      });
-    });
-    wrapperObserver.observe(wrapper, { attributes: true });
-  }
+  // Cache the node in memory so React's SPA router cannot permanently destroy it
+  let loginHintNode = document.querySelector('.public-login-hint');
+  let originalSidebarParent = document.querySelector('#sidebar .plugin-list');
 
-  // --- 2. Move the login hint with a MutationObserver ---
-  const moveLoginHint = () => {
-    // Find the login hint ONLY if it is still inside the sidebar
-    const loginHint = document.querySelector('#sidebar .public-login-hint');
-    if (!loginHint) return;
+  // --- 1. Fix the wrapper layout classes ---
+  const fixWrapper = () => {
+    if (wrapper.classList.contains('on-main-page') && !wrapper.classList.contains('is-content-document-page')) {
+      wrapper.classList.add('is-content-document-page');
+    }
+    const selectedSidebarItem = document.querySelector('#sidebar .item.selected');
+    if (selectedSidebarItem) selectedSidebarItem.classList.remove('selected');
+  };
 
-    // Find the target row, checking inside the Shadow DOM if necessary
-    let targetRow = document.getElementById('d45e5e96-e719-4e84-b40d-aeac2eac2c4c');
-    if (!targetRow) {
-      const shadowHost = document.querySelector('[data-testid="modern-page-shadow-host"]');
-      if (shadowHost && shadowHost.shadowRoot) {
-        targetRow = shadowHost.shadowRoot.getElementById('d45e5e96-e719-4e84-b40d-aeac2eac2c4c');
-      }
+  // --- 2. Safely route the login hint node ---
+  const handleLoginHint = () => {
+    // If we haven't grabbed the node yet, try to grab it
+    if (!loginHintNode) {
+      loginHintNode = document.querySelector('.public-login-hint');
+      if (!loginHintNode) return;
     }
 
-    // Move the element
-    if (targetRow && targetRow.nextSibling !== loginHint) {
-      targetRow.parentNode.insertBefore(loginHint, targetRow.nextSibling);
+    const isMainPage = wrapper.classList.contains('on-main-page');
+
+    if (isMainPage) {
+      // Find the target row inside the Shadow DOM
+      let targetRow = document.getElementById('d45e5e96-e719-4e84-b40d-aeac2eac2c4c');
+      if (!targetRow) {
+        const shadowHost = document.querySelector('[data-testid="modern-page-shadow-host"]');
+        if (shadowHost && shadowHost.shadowRoot) {
+          targetRow = shadowHost.shadowRoot.getElementById('d45e5e96-e719-4e84-b40d-aeac2eac2c4c');
+        }
+      }
+
+      // If target exists and our node isn't already below it, move it there
+      if (targetRow && targetRow.nextSibling !== loginHintNode) {
+        targetRow.parentNode.insertBefore(loginHintNode, targetRow.nextSibling);
+      }
+    } else {
+      // If we are NOT on the main page, move the node back to the sidebar 
+      // so it stops perpetually showing up on random pages
+      if (originalSidebarParent && loginHintNode.parentNode !== originalSidebarParent) {
+        originalSidebarParent.prepend(loginHintNode);
+      }
     }
   };
 
-  // Run once on load
-  moveLoginHint();
+  // Run once on initial load
+  fixWrapper();
+  handleLoginHint();
 
-  // Set up a global observer to catch SPA navigation and Shadow DOM injections
+  // --- 3. Global Mutation Observer ---
+  // Watches the entire body so it triggers the instant React redraws a page
   const domObserver = new MutationObserver(() => {
-    moveLoginHint();
+    fixWrapper();
+    handleLoginHint();
   });
 
-  // Observe the body for added/removed nodes so it instantly catches when React redraws the page
-  domObserver.observe(document.body, { childList: true, subtree: true });
+  domObserver.observe(document.body, { 
+    childList: true, 
+    subtree: true, 
+    attributes: true, 
+    attributeFilter: ['class'] 
+  });
 
 })();
