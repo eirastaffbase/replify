@@ -1,6 +1,6 @@
 (function () {
   // Map Group IDs to corresponding Brand Logo URLs
-  const logoMap = {
+const logoMap = {
     'group-6a9ff3b4079edf19be16ba6a': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/db89d0d158d253e3e4e2b2b8f663295c.jpg',
     'group-6a9ff3b57523b15a0decd3d9': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/1ffe3d171b5ccf8cbad774ad6e77f179.webp',
     'group-6a9ff3b6079edf19be16ba84': 'https://www.war.gov/Portals/1/Images/DOD-Icon-Header.png?ver=5sAfFl2--9znca0j3SrX_g%3d%3d',
@@ -13,6 +13,7 @@
     'group-6a9ff3bd079edf19be16bb13': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/b498c17b88546ab8963116bf3d340252.png',
     'group-6a9ff3be7523b15a0decd457': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/331f366028d453c23d212d39ef6ef730.png',
     'group-6a9ff3bfb935e8385d48b21d': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/95ff203d505f39d09429b620cdac435c.png',
+    'group-6a9ff3c0079edf19be16bb21': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/ac61197bb139b96eb997630fedb5bb13.png',
     'group-6a9ff3c1079edf19be16bb25': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/ff0cce34a8d33baff4195e3a53eda24f.png',
     'group-6a9ff3c2079edf19be16bb36': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/7a6d62bb1f27fee8e900aceb9ccf9921.jpg',
     'group-6a9ff3c37523b15a0decd46f': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/d17c1d2885debb240ee1dab55f63dd41.jpg',
@@ -20,7 +21,8 @@
     'group-6a9ff3c5b935e8385d48b264': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/15e880046b16a6d0186b81632a1ab06b.webp',
     'group-6a9ff3c6b935e8385d48b267': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/4e9fce6dafb36457376d71d599a71403.webp',
     'group-6a9ff3c7079edf19be16bb74': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/4d9a8ce5152cb28590d5b9a652ed3020.png',
-    'group-6a9ff3c8079edf19be16bb7a': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/f86dd69e3904f555b74c6e2ed965f284.webp'
+    'group-6a9ff3c8079edf19be16bb7a': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/f86dd69e3904f555b74c6e2ed965f284.webp',
+    'group-6aa1b6a5ad888a66b7f179d5': 'https://bloodcancerunited.org/themes/custom/blood_cancer_united/logo.svg'
   };
 
   function getAllLogoImages() {
