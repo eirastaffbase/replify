@@ -23,33 +23,54 @@
     'group-6a9ff3c8079edf19be16bb7a': 'https://gbi-sep2026.staffbase.rocks/api/media/secure/external/v2/image/upload/f86dd69e3904f555b74c6e2ed965f284.webp'
   };
 
-  function updateAssistantLogo() {
-    const activeGroupClass = Array.from(document.documentElement.classList).find(c => c.startsWith('group-'));
-    const targetLogo = logoMap[activeGroupClass];
-    if (!targetLogo) return;
+  function getAllLogoImages() {
+    const selector = 'img[data-c13y-purpose="logo"]';
+    const logos = new Set();
 
+    // 1. Search main document
+    document.querySelectorAll(selector).forEach(img => logos.add(img));
+
+    // 2. Search shadow root or iframe under #ai-assistant-root
     const aiRoot = document.getElementById('ai-assistant-root');
-    if (!aiRoot) return;
-
-    // Search main DOM, Shadow DOM, or Iframe
-    let logoImg = aiRoot.shadowRoot?.querySelector('img[data-c13y-purpose="logo"]') 
-               || aiRoot.querySelector('img[data-c13y-purpose="logo"]')
-               || document.querySelector('img[data-c13y-purpose="logo"]');
-
-    if (!logoImg) {
+    if (aiRoot) {
+      if (aiRoot.shadowRoot) {
+        aiRoot.shadowRoot.querySelectorAll(selector).forEach(img => logos.add(img));
+      }
       const iframe = aiRoot.querySelector('iframe') || document.querySelector('#ai-assistant-root iframe');
       if (iframe) {
         try {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-          logoImg = iframeDoc?.querySelector('img[data-c13y-purpose="logo"]');
+          if (iframeDoc) {
+            iframeDoc.querySelectorAll(selector).forEach(img => logos.add(img));
+          }
         } catch (e) {}
       }
     }
 
-    if (logoImg && logoImg.src !== targetLogo) {
-      logoImg.src = targetLogo;
-    }
+    return Array.from(logos);
   }
 
-  setInterval(updateAssistantLogo, 500);
+  function updateAssistantLogos() {
+    const activeGroupClass = Array.from(document.documentElement.classList).find(c => c.startsWith('group-'));
+    const targetLogo = logoMap[activeGroupClass];
+    if (!targetLogo) return;
+
+    const logoImages = getAllLogoImages();
+
+    logoImages.forEach(logoImg => {
+      // Replace src when mismatched
+      if (logoImg.src !== targetLogo) {
+        logoImg.src = targetLogo;
+      }
+
+      // Preserve aspect ratio for the 72px modal logo so non-square logos aren't squished
+      if (logoImg.classList.contains('h-[72px]') || logoImg.getAttribute('alt') === 'AI Assistant Logo') {
+        logoImg.style.width = 'auto';
+        logoImg.style.maxWidth = 'none';
+        logoImg.style.objectFit = 'contain';
+      }
+    });
+  }
+
+  setInterval(updateAssistantLogos, 500);
 })();
