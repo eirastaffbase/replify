@@ -2,16 +2,23 @@
    bimbo-cake-button.js   — deploy in Global JS
    ----------------------------------------------------------------------------
    Adds a cake icon link as the FIRST item in the header actions row (before the
-   Edit button). White by default; #8B374A in the El Globo group. Links to the
-   birthdays page. Re-applies on an interval because the header re-renders.
+   Edit button). White by default; #8B374A in the El Globo group. Re-applies on
+   an interval because the header re-renders.
+
+   In-app navigation: an href alone does NOT route inside the mobile app WebView
+   (it falls back to a full page load and the user loses their place). So the
+   click is routed through the platform's router, window.NavigationMgr.goTo() —
+   the same technique the task widgets' linkify handler uses (shared/linkify.ts
+   -> goToInApp) — with we.native / hideAllTabs() handling and a location.assign
+   fallback if the router isn't present.
    ============================================================================ */
 (function () {
   "use strict";
 
   var GROUP_ID = "6aaa7d70a742e5436549bc91"; // El Globo
-  // Mega-menu /openlink wrapper — the app resolves this and opens the page
-  // in-app (same href pattern the mega-menu items use).
-  var LINK  = "/openlink/content/page/6aab554421459d46d16f9a94?utm_source=in-app&utm_medium=header&utm_campaign=cake-button";
+  // Plain in-app path (no /openlink wrapper, no query) — what NavigationMgr.goTo
+  // expects, and a valid fallback href for a full load if the router is absent.
+  var PATH  = "/content/page/6aab554421459d46d16f9a94";
   var MARK  = "replify-cake-button";
   var LABEL = "Birthdays";
 
@@ -27,6 +34,28 @@
   }
   function iconColor() { return inElGlobo() ? "#8B374A" : "#ffffff"; }
 
+  // Route in-app via the platform router (same as the widgets' goToInApp).
+  function goToInApp(path) {
+    var w = window;
+    var nav = w.NavigationMgr;
+    if (nav && typeof nav.goTo === "function") {
+      try {
+        if (w.we && w.we.native && typeof nav.hideAllTabs === "function") nav.hideAllTabs();
+        nav.goTo(path);
+        return;
+      } catch (e) { /* router unhappy — fall through to a plain load */ }
+    }
+    w.location.assign(path);
+  }
+
+  function onCakeClick(ev) {
+    // Leave modified clicks to the browser (new tab, etc.).
+    if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    goToInApp(PATH);
+  }
+
   function ensureCake() {
     var containers = document.querySelectorAll(".header-right-container.actions");
     [].forEach.call(containers, function (container) {
@@ -34,7 +63,7 @@
       if (!cake) {
         cake = document.createElement("a");
         cake.className = "header-button " + MARK;
-        cake.href = LINK;
+        cake.href = PATH;                       // fallback / accessibility
         cake.setAttribute("aria-label", LABEL);
         cake.setAttribute("title", LABEL);
         cake.style.display = "inline-flex";
@@ -42,6 +71,7 @@
         cake.style.justifyContent = "center";
         cake.style.transform = "translate(-1px, -1px)"; // nudge left 1px, up 1px
         cake.innerHTML = CAKE_SVG;
+        cake.addEventListener("click", onCakeClick, true); // capture, before header handlers
         container.insertBefore(cake, container.firstChild); // before the Edit button
       }
       cake.style.color = iconColor();
