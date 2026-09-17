@@ -25,6 +25,7 @@
   var LOGO_URL = "https://cdn.shopify.com/s/files/1/0563/2357/1884/files/EL_GLOBO_LOGO.png";
   var NAV_BG   = "#ffffff";  // white bar
   var TEXT     = "#8B374A";  // maroon text + icons
+  var BORDER   = "#8B374A";  // nav border matches the brand color
   var RADIUS   = "0px";      // square — nav only
   var FONT_FAMILY = '"Montserrat","Helvetica Neue",Arial,sans-serif';
   var FONT_HREF   = "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap";
@@ -78,6 +79,10 @@
   function applyBranding() {
     if (TOP.getElementById(STYLE_ID)) return;
     loadFont();
+    var border =
+      "border-color:" + BORDER + " !important;" +
+      "border-top-color:" + BORDER + " !important;border-right-color:" + BORDER + " !important;" +
+      "border-bottom-color:" + BORDER + " !important;border-left-color:" + BORDER + " !important;";
     var css =
       /* logo */
       LOGO_SEL + '{' +
@@ -92,6 +97,9 @@
       /* maroon icons + titles */
       H + ' [data-c13y-component="icon"]{color:' + TEXT + ' !important;fill:' + TEXT + ' !important;}' +
       H + ' [data-c13y-component="title"]{color:' + TEXT + ' !important;}' +
+      /* border matches the brand color (nav only) */
+      H + H + H + '{' + border + '}' +
+      '[class*="border-nav-appintranet"],[class*="border-menu-appintranet"]{' + border + '}' +
       /* square — nav only (radius kept in its own rules) */
       H + H + '{border-radius:' + RADIUS + ' !important;}' +
       '[class*="bg-nav-appintranet"],[class*="bg-menu-appintranet"]{border-radius:' + RADIUS + ' !important;}' +
