@@ -9,7 +9,9 @@
   "use strict";
 
   var GROUP_ID = "6aaa7d70a742e5436549bc91"; // El Globo
-  var LINK  = "https://bimbo.staffbase.rocks/content/page/6aab554421459d46d16f9a94";
+  // Relative in-app path (NOT a full https:// URL) so the app router handles it
+  // and it opens inside the mobile app — same technique as the nav/task links.
+  var LINK  = "/content/page/6aab554421459d46d16f9a94";
   var MARK  = "replify-cake-button";
   var LABEL = "Birthdays";
 
@@ -31,13 +33,15 @@
       var cake = container.querySelector("." + MARK);
       if (!cake) {
         cake = document.createElement("a");
-        cake.className = "header-button " + MARK;
+        // link-internal -> the app's SPA router intercepts it and opens in-app
+        cake.className = "header-button link-internal " + MARK;
         cake.href = LINK;
         cake.setAttribute("aria-label", LABEL);
         cake.setAttribute("title", LABEL);
         cake.style.display = "inline-flex";
         cake.style.alignItems = "center";
         cake.style.justifyContent = "center";
+        cake.style.transform = "translate(-1px, -1px)"; // nudge left 1px, up 1px
         cake.innerHTML = CAKE_SVG;
         container.insertBefore(cake, container.firstChild); // before the Edit button
       }
