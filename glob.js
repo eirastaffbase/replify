@@ -1,5 +1,5 @@
 /* ============================================================================
-   bimbo-newnav-multibrand.js   (v1.0)   — deploy in Global JS
+   bimbo-newnav-multibrand.js   (v1.1)   — deploy in Global JS
    ----------------------------------------------------------------------------
    Works like the Hill's script: brands the NEW UX / c13y nav
    (data-c13y-region="header") for ONE group and leaves everyone else — Grupo
@@ -11,6 +11,10 @@
      shape  -> square (border-radius 0) — nav only
      font   -> Montserrat (nav only)
 
+   v1.1: also swaps ALL navigator / AI-assistant logos
+   (img[data-c13y-purpose="logo"], incl. shadow root + #ai-assistant-root
+   iframe) to the El Globo logo when in the El Globo group, on an interval.
+
    Uses [class*="...appintranet..."] substring selectors (the technique from the
    Hill's/Frontier build) because these nav tokens live in @layer utilities and
    lose to plain [data-c13y-region] specificity stacking on background.
@@ -18,7 +22,7 @@
 (function () {
   "use strict";
 
-  var VERSION = "1.0";
+  var VERSION = "1.1";
 
   // ---- CONFIG (El Globo) ----------------------------------------------------
   var GROUP_ID = "6aaa7d70a742e5436549bc91";
@@ -76,6 +80,11 @@
     return null;
   }
 
+  function inElGlobo() {
+    var cls = groupClasses();
+    return cls !== null && cls.indexOf("group-" + GROUP_ID) !== -1;
+  }
+
   function applyBranding() {
     if (TOP.getElementById(STYLE_ID)) return;
     loadFont();
@@ -118,6 +127,46 @@
     return true;
   }
 
+  /* ---------- navigator / AI-assistant logos ---------- */
+  function getAllLogoImages() {
+    var selector = 'img[data-c13y-purpose="logo"]';
+    var logos = new Set();
+
+    // main document
+    document.querySelectorAll(selector).forEach(function (img) { logos.add(img); });
+
+    // shadow root / iframe under #ai-assistant-root
+    var aiRoot = document.getElementById("ai-assistant-root");
+    if (aiRoot) {
+      if (aiRoot.shadowRoot) {
+        aiRoot.shadowRoot.querySelectorAll(selector).forEach(function (img) { logos.add(img); });
+      }
+      var iframe = aiRoot.querySelector("iframe") || document.querySelector("#ai-assistant-root iframe");
+      if (iframe) {
+        try {
+          var iframeDoc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+          if (iframeDoc) {
+            iframeDoc.querySelectorAll(selector).forEach(function (img) { logos.add(img); });
+          }
+        } catch (e) {}
+      }
+    }
+    return Array.from(logos);
+  }
+
+  function updateNavigatorLogos() {
+    if (!inElGlobo()) return;
+    getAllLogoImages().forEach(function (img) {
+      if (img.src !== LOGO_URL) img.src = LOGO_URL;
+      // keep aspect ratio for the 72px modal logo so non-square logos aren't squished
+      if (img.classList.contains("h-[72px]") || img.getAttribute("alt") === "AI Assistant Logo") {
+        img.style.width = "auto";
+        img.style.maxWidth = "none";
+        img.style.objectFit = "contain";
+      }
+    });
+  }
+
   console.log("[replify elglobo-nav v" + VERSION + "] loaded.");
   if (!tick()) {
     var n = 0;
@@ -129,4 +178,7 @@
       }
     }, 250);
   }
+
+  // keep navigator / AI-assistant logos swapped (they re-render)
+  setInterval(updateNavigatorLogos, 500);
 })();
